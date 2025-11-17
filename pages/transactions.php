@@ -373,7 +373,6 @@ sort($uniqueCoins);
                 <table class="transactions-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Type</th>
                             <th>Coin</th>
                             <th>Amount</th>
@@ -386,7 +385,6 @@ sort($uniqueCoins);
                     <tbody>
                         <?php foreach ($filteredTransactions as $tx): ?>
                             <tr>
-                                <td><strong><?php echo htmlspecialchars($tx['id']); ?></strong></td>
                                 <td>
                                     <span class="tx-type <?php echo $tx['type']; ?>">
                                         <?php echo $tx['type'] === 'deposit' ? '↓' : '↑'; ?>

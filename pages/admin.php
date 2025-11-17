@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $transactions[] = $newTransaction;
         file_put_contents($transactionsFile, json_encode($transactions, JSON_PRETTY_PRINT));
-        $message = 'Transaction added successfully with ID: ' . $newTransaction['id'];
+        $message = 'Transaction added successfully!';
         $messageType = 'success';
     }
 
@@ -132,56 +132,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     border: 1px solid #10b981;
 }
 
-.add-form-card {
-    background: #fff;
-    padding: 24px;
-    border-radius: 12px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.add-form-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #111827;
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 16px;
+.table-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.form-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.form-input,
-.form-select {
-    padding: 8px 10px;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: inherit;
-}
-
-.form-input:focus,
-.form-select:focus {
-    outline: none;
-    border-color: #6366f1;
-}
-
-.btn-add {
+.btn-add-row {
     padding: 10px 24px;
     background: #6366f1;
     color: #fff;
@@ -193,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     transition: background 0.3s;
 }
 
-.btn-add:hover {
+.btn-add-row:hover {
     background: #4f46e5;
 }
 
@@ -236,6 +200,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 .transactions-table tbody tr.editing {
     background: #eff6ff;
+}
+
+.transactions-table tbody tr.new-row {
+    background: #f0fdf4;
 }
 
 .coin-cell {
@@ -314,6 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    white-space: nowrap;
 }
 
 .btn-edit {
@@ -354,18 +323,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 .edit-input {
     width: 100%;
-    padding: 4px 8px;
+    padding: 6px 8px;
     border: 1px solid #6366f1;
     border-radius: 4px;
     font-size: 13px;
+    box-sizing: border-box;
 }
 
 .edit-select {
     width: 100%;
-    padding: 4px 8px;
+    padding: 6px 8px;
     border: 1px solid #6366f1;
     border-radius: 4px;
     font-size: 13px;
+    box-sizing: border-box;
 }
 
 .monospace {
@@ -375,16 +346,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 @media (max-width: 1200px) {
-    .form-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
     .transactions-table {
         font-size: 12px;
     }
@@ -395,7 +356,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="admin-header">
         <div class="container">
             <h1>Transaction Management</h1>
-            <p>Add, edit, or delete cryptocurrency transactions</p>
+            <p>Manage all cryptocurrency transactions</p>
         </div>
     </div>
 
@@ -406,85 +367,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endif; ?>
 
-        <!-- Add New Transaction Form -->
-        <div class="add-form-card">
-            <h2 class="add-form-title">Add New Transaction</h2>
-            <form method="POST" action="">
-                <input type="hidden" name="action" value="add">
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label">Type *</label>
-                        <select name="type" class="form-select" required>
-                            <option value="deposit">Deposit</option>
-                            <option value="withdrawal">Withdrawal</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Coin *</label>
-                        <select name="coin" class="form-select" required>
-                            <option value="BTC">BTC</option>
-                            <option value="ETH">ETH</option>
-                            <option value="USDT">USDT</option>
-                            <option value="USDC">USDC</option>
-                            <option value="LTC">LTC</option>
-                            <option value="XMR">XMR</option>
-                            <option value="DASH">DASH</option>
-                            <option value="TRX">TRX</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Amount *</label>
-                        <input type="text" name="amount" class="form-input" placeholder="e.g., 0.0523" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Fee *</label>
-                        <input type="text" name="fee" class="form-input" placeholder="e.g., 0.00001" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Network *</label>
-                        <input type="text" name="network" class="form-input" placeholder="e.g., Bitcoin, ERC-20" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Status *</label>
-                        <select name="status" class="form-select" required>
-                            <option value="completed">Completed</option>
-                            <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="failed">Failed</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Confirmations *</label>
-                        <input type="number" name="confirmations" class="form-input" value="0" min="0" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Timestamp</label>
-                        <input type="text" name="timestamp" class="form-input" value="<?php echo date('Y-m-d H:i:s'); ?>" placeholder="YYYY-MM-DD HH:MM:SS">
-                    </div>
-                </div>
-
-                <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
-                    <div class="form-group">
-                        <label class="form-label">Wallet Address *</label>
-                        <input type="text" name="address" class="form-input" placeholder="Full wallet address" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Transaction Hash (TXID) *</label>
-                        <input type="text" name="txid" class="form-input" placeholder="Blockchain transaction hash" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-add">Add Transaction (ID will be auto-generated)</button>
-            </form>
+        <div class="table-header">
+            <div class="table-title">All Transactions (<?php echo count($transactions); ?>)</div>
+            <button class="btn-add-row" onclick="showNewRow()">+ Add New Transaction</button>
         </div>
 
         <!-- Transactions Table -->
@@ -492,7 +377,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <table class="transactions-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Type</th>
                         <th>Coin</th>
                         <th>Amount</th>
@@ -507,16 +391,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- New Row Template (hidden by default) -->
+                    <tr id="new-row" style="display: none;" class="new-row">
+                        <td>
+                            <select class="edit-select" id="new-type">
+                                <option value="deposit">Deposit</option>
+                                <option value="withdrawal">Withdrawal</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="edit-select" id="new-coin">
+                                <option value="BTC">BTC</option>
+                                <option value="ETH">ETH</option>
+                                <option value="USDT">USDT</option>
+                                <option value="USDC">USDC</option>
+                                <option value="LTC">LTC</option>
+                                <option value="XMR">XMR</option>
+                                <option value="DASH">DASH</option>
+                                <option value="TRX">TRX</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="edit-input" id="new-amount" placeholder="0.00"></td>
+                        <td><input type="text" class="edit-input" id="new-network" placeholder="Network"></td>
+                        <td><input type="text" class="edit-input" id="new-address" placeholder="Address"></td>
+                        <td><input type="text" class="edit-input" id="new-txid" placeholder="Transaction hash"></td>
+                        <td>
+                            <select class="edit-select" id="new-status">
+                                <option value="completed">Completed</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </td>
+                        <td><input type="number" class="edit-input" id="new-confirmations" value="0" min="0"></td>
+                        <td><input type="text" class="edit-input" id="new-fee" placeholder="0.00"></td>
+                        <td><input type="text" class="edit-input" id="new-timestamp" value="<?php echo date('Y-m-d H:i:s'); ?>"></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-save" onclick="saveNewRow()">Save</button>
+                                <button class="btn-cancel-edit" onclick="cancelNewRow()">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+
                     <?php if (empty($transactions)): ?>
-                        <tr>
-                            <td colspan="12" style="text-align: center; padding: 40px; color: #6b7280;">
-                                No transactions yet. Add your first transaction above.
+                        <tr id="empty-message">
+                            <td colspan="11" style="text-align: center; padding: 40px; color: #6b7280;">
+                                No transactions yet. Click "Add New Transaction" to create one.
                             </td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($transactions as $tx): ?>
+                            <!-- Normal View Row -->
                             <tr id="row-<?php echo htmlspecialchars($tx['id']); ?>">
-                                <td><strong><?php echo htmlspecialchars($tx['id']); ?></strong></td>
                                 <td>
                                     <span class="tx-type <?php echo $tx['type']; ?>">
                                         <?php echo $tx['type'] === 'deposit' ? '↓' : '↑'; ?>
@@ -551,9 +478,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </td>
                             </tr>
 
-                            <!-- Hidden edit row -->
+                            <!-- Edit Row (hidden by default) -->
                             <tr id="edit-<?php echo htmlspecialchars($tx['id']); ?>" style="display: none;" class="editing">
-                                <td><strong><?php echo htmlspecialchars($tx['id']); ?></strong></td>
                                 <td>
                                     <select class="edit-select" id="type-<?php echo htmlspecialchars($tx['id']); ?>">
                                         <option value="deposit" <?php echo $tx['type'] === 'deposit' ? 'selected' : ''; ?>>Deposit</option>
@@ -603,6 +529,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </main>
 
 <script>
+function showNewRow() {
+    // Hide empty message if visible
+    const emptyMsg = document.getElementById('empty-message');
+    if (emptyMsg) {
+        emptyMsg.style.display = 'none';
+    }
+
+    // Show new row
+    document.getElementById('new-row').style.display = 'table-row';
+}
+
+function cancelNewRow() {
+    document.getElementById('new-row').style.display = 'none';
+
+    // Show empty message again if no transactions
+    const emptyMsg = document.getElementById('empty-message');
+    if (emptyMsg) {
+        emptyMsg.style.display = 'table-row';
+    }
+}
+
+function saveNewRow() {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '';
+
+    const fields = {
+        action: 'add',
+        type: document.getElementById('new-type').value,
+        coin: document.getElementById('new-coin').value,
+        amount: document.getElementById('new-amount').value,
+        network: document.getElementById('new-network').value,
+        address: document.getElementById('new-address').value,
+        txid: document.getElementById('new-txid').value,
+        status: document.getElementById('new-status').value,
+        confirmations: document.getElementById('new-confirmations').value,
+        fee: document.getElementById('new-fee').value,
+        timestamp: document.getElementById('new-timestamp').value
+    };
+
+    for (const [key, value] of Object.entries(fields)) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
 function editRow(id) {
     document.getElementById('row-' + id).style.display = 'none';
     document.getElementById('edit-' + id).style.display = 'table-row';
