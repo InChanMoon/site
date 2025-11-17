@@ -1,0 +1,57 @@
+[
+    {
+        "id": "YT001",
+        "email": "premium.channel01@gmail.com",
+        "password": "***hidden***",
+        "subscribers": "125K",
+        "price": "15000.00",
+        "purchaseDate": "2025-01-15 10:30:00",
+        "status": "delivered",
+        "category": "Gaming",
+        "monetized": true
+    },
+    {
+        "id": "YT002",
+        "email": "tech.reviews.pro@gmail.com",
+        "password": "***hidden***",
+        "subscribers": "89K",
+        "price": "12500.00",
+        "purchaseDate": "2025-01-14 15:45:00",
+        "status": "delivered",
+        "category": "Technology",
+        "monetized": true
+    },
+    {
+        "id": "YT003",
+        "email": "cooking.master2024@gmail.com",
+        "password": "***hidden***",
+        "subscribers": "65K",
+        "price": "9800.00",
+        "purchaseDate": "2025-01-13 09:20:00",
+        "status": "delivered",
+        "category": "Food & Cooking",
+        "monetized": true
+    },
+    {
+        "id": "YT004",
+        "email": "fitness.journey.daily@gmail.com",
+        "password": "***hidden***",
+        "subscribers": "45K",
+        "price": "7500.00",
+        "purchaseDate": "2025-01-12 18:00:00",
+        "status": "processing",
+        "category": "Health & Fitness",
+        "monetized": false
+    },
+    {
+        "id": "YT005",
+        "email": "travel.vlogs.world@gmail.com",
+        "password": "***hidden***",
+        "subscribers": "210K",
+        "price": "28000.00",
+        "purchaseDate": "2025-01-10 14:15:00",
+        "status": "delivered",
+        "category": "Travel & Events",
+        "monetized": true
+    }
+]

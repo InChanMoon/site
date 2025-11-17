@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .transactions-table-container {
     background: #fff;
     border-radius: 12px;
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -186,6 +186,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+.transactions-table th:last-child,
+.transactions-table td:last-child {
+    min-width: 140px;
+    width: 140px;
 }
 
 .transactions-table td {
