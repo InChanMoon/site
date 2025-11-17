@@ -265,6 +265,14 @@ section {
     font-size: 14px;
 }
 
+.coin-icon-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+
 .coin-icon-default {
     width: 48px;
     height: 48px;

@@ -32,18 +32,22 @@ include 'includes/header.php';
             <div class="coins-grid">
                 <?php
                 $coins = [
-                    ['name' => 'Tether USD', 'code' => 'USDT', 'price' => '$0.99'],
-                    ['name' => 'Bitcoin', 'code' => 'BTC', 'price' => '$92,855.86'],
-                    ['name' => 'Monero', 'code' => 'XMR', 'price' => '$410.54'],
-                    ['name' => 'Litecoin', 'code' => 'LTC', 'price' => '$93.70'],
-                    ['name' => 'Ethereum', 'code' => 'ETH', 'price' => '$3,060.60'],
-                    ['name' => 'USD Coin', 'code' => 'USDC', 'price' => '$0.99'],
-                    ['name' => 'Dash', 'code' => 'DASH', 'price' => '$81.67'],
+                    ['name' => 'Tether USD', 'code' => 'USDT', 'price' => '$0.99', 'icon' => 'usdt'],
+                    ['name' => 'Bitcoin', 'code' => 'BTC', 'price' => '$92,855.86', 'icon' => 'btc'],
+                    ['name' => 'Monero', 'code' => 'XMR', 'price' => '$410.54', 'icon' => 'xmr'],
+                    ['name' => 'Litecoin', 'code' => 'LTC', 'price' => '$93.70', 'icon' => 'ltc'],
+                    ['name' => 'Ethereum', 'code' => 'ETH', 'price' => '$3,060.60', 'icon' => 'eth'],
+                    ['name' => 'USD Coin', 'code' => 'USDC', 'price' => '$0.99', 'icon' => 'usdc'],
+                    ['name' => 'Dash', 'code' => 'DASH', 'price' => '$81.67', 'icon' => 'dash'],
                 ];
 
                 foreach ($coins as $coin): ?>
                 <div class="coin-item">
-                    <div class="coin-icon"><?php echo $coin['code']; ?></div>
+                    <img src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/<?php echo $coin['icon']; ?>.png"
+                         alt="<?php echo $coin['name']; ?>"
+                         width="48"
+                         height="48"
+                         class="coin-icon-img">
                     <div class="coin-info">
                         <p class="coin-name"><?php echo $coin['name']; ?></p>
                         <span class="coin-price"><?php echo $coin['price']; ?></span>
