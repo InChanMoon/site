@@ -18,7 +18,7 @@ include 'includes/header.php';
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="/assets/img/main-background.png" alt="Main Background" width="568" height="363">
+                    <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=568&h=363&fit=crop&q=80" alt="Cryptocurrency Payment" width="568" height="363">
                 </div>
             </div>
         </div>
@@ -77,7 +77,7 @@ include 'includes/header.php';
                         </div>
                     </div>
                     <div class="work-item work-item-2">
-                        <img src="/assets/img/3d-element.png" alt="3D Element" width="370" height="300">
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=370&h=300&fit=crop&q=80" alt="Dashboard Interface" width="370" height="300">
                         <div class="work-text">
                             <p class="work-title">One Account for All Your Projects</p>
                             <p class="work-subtitle">Combine all your projects in one place: add your stores, track revenue and analytics for each project in a single window.</p>
@@ -214,7 +214,7 @@ include 'includes/header.php';
                     <a href="#form" class="btn btn-primary">Send a Request</a>
                 </div>
                 <div class="privacy-image">
-                    <img src="/assets/img/enhanced-privacy.png" alt="Enhanced Privacy" width="364" height="296">
+                    <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=364&h=296&fit=crop&q=80" alt="Security and Privacy" width="364" height="296">
                 </div>
             </div>
         </div>
@@ -280,7 +280,7 @@ include 'includes/header.php';
                 <button type="submit" class="btn btn-primary btn-large">Send</button>
             </form>
             <div class="form-image">
-                <img src="/assets/img/form-background.png" alt="Message" width="400" height="320">
+                <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=400&h=320&fit=crop&q=80" alt="Contact Us" width="400" height="320">
             </div>
         </div>
     </section>
