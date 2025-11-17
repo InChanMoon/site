@@ -15,15 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
 
     if (empty($name) || strlen($name) < 2) {
-        $errors[] = '이름은 최소 2자 이상이어야 합니다.';
+        $errors[] = 'Name must be at least 2 characters long.';
     }
 
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = '유효한 이메일 주소를 입력해주세요.';
+        $errors[] = 'Please enter a valid email address.';
     }
 
     if (!empty($website) && !filter_var($website, FILTER_VALIDATE_URL)) {
-        $errors[] = '유효한 웹사이트 URL을 입력해주세요.';
+        $errors[] = 'Please enter a valid website URL.';
     }
 
     if (empty($errors)) {

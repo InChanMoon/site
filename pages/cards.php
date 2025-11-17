@@ -1,6 +1,6 @@
 <?php
 $pageTitle = 'Cards - Heleket';
-$pageDescription = '암호화폐 카드 서비스';
+$pageDescription = 'Cryptocurrency card service';
 include '../includes/header.php';
 ?>
 
@@ -10,11 +10,11 @@ include '../includes/header.php';
             <div class="hero-content">
                 <div class="hero-text">
                     <span class="badge-new">New</span>
-                    <h1 class="hero-title">암호화폐 카드</h1>
-                    <p class="hero-subtitle">편리하고 안전한 암호화폐 카드 서비스를 제공합니다.</p>
+                    <h1 class="hero-title">Cryptocurrency Cards</h1>
+                    <p class="hero-subtitle">We provide convenient and secure cryptocurrency card services.</p>
                     <div class="hero-buttons">
-                        <a href="https://dash.heleket.com/signup" class="btn btn-primary btn-large">시작하기</a>
-                        <a href="/pages/contacts.php" class="btn btn-outline btn-large">문의하기</a>
+                        <a href="https://dash.heleket.com/signup" class="btn btn-primary btn-large">Get Started</a>
+                        <a href="/pages/contacts.php" class="btn btn-outline btn-large">Contact Us</a>
                     </div>
                 </div>
             </div>
@@ -23,29 +23,29 @@ include '../includes/header.php';
 
     <section style="padding: 80px 0;">
         <div class="container">
-            <h2 class="section-title">카드 기능</h2>
-            <p class="section-description">암호화폐 카드로 일상에서 편리하게 사용하세요.</p>
+            <h2 class="section-title">Card Features</h2>
+            <p class="section-description">Use crypto cards conveniently in your daily life.</p>
 
             <div class="advantages-grid" style="margin-top: 60px;">
                 <div class="advantage-item">
                     <div class="advantage-icon">💳</div>
-                    <p class="advantage-title">가상 카드</p>
-                    <p class="advantage-description">온라인 결제를 위한 가상 카드를 즉시 발급받으세요.</p>
+                    <p class="advantage-title">Virtual Cards</p>
+                    <p class="advantage-description">Get virtual cards instantly for online payments.</p>
                 </div>
                 <div class="advantage-item">
                     <div class="advantage-icon">🌐</div>
-                    <p class="advantage-title">글로벌 사용</p>
-                    <p class="advantage-description">전 세계 어디서나 사용 가능한 카드.</p>
+                    <p class="advantage-title">Global Usage</p>
+                    <p class="advantage-description">Cards that can be used anywhere in the world.</p>
                 </div>
                 <div class="advantage-item">
                     <div class="advantage-icon">🔒</div>
-                    <p class="advantage-title">안전한 거래</p>
-                    <p class="advantage-description">최고 수준의 보안으로 안전하게 거래하세요.</p>
+                    <p class="advantage-title">Secure Transactions</p>
+                    <p class="advantage-description">Trade safely with the highest level of security.</p>
                 </div>
                 <div class="advantage-item">
                     <div class="advantage-icon">⚡</div>
-                    <p class="advantage-title">즉시 충전</p>
-                    <p class="advantage-description">암호화폐로 즉시 카드를 충전할 수 있습니다.</p>
+                    <p class="advantage-title">Instant Recharge</p>
+                    <p class="advantage-description">You can recharge your card instantly with cryptocurrency.</p>
                 </div>
             </div>
         </div>

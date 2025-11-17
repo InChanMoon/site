@@ -1,79 +1,79 @@
-# Heleket 스타일 웹사이트
+# Heleket Style Website
 
-heleket.com과 유사한 암호화폐 결제 게이트웨이 웹사이트입니다.
+A cryptocurrency payment gateway website similar to heleket.com.
 
-## 프로젝트 구조
+## Project Structure
 
 ```
 site/
-├── index.php                 # 메인 페이지
-├── includes/                 # 공통 컴포넌트
-│   ├── header.php           # 헤더
-│   └── footer.php           # 푸터
-├── pages/                    # 서브 페이지
-│   ├── cards.php            # 카드 페이지
-│   ├── contacts.php         # 연락처 페이지
-│   └── blog.php             # 블로그 페이지
-└── assets/                   # 정적 자산
+├── index.php                 # Main page
+├── includes/                 # Common components
+│   ├── header.php           # Header
+│   └── footer.php           # Footer
+├── pages/                    # Sub pages
+│   ├── cards.php            # Cards page
+│   ├── contacts.php         # Contacts page
+│   └── blog.php             # Blog page
+└── assets/                   # Static assets
     ├── css/
-    │   └── style.css        # 메인 스타일시트
+    │   └── style.css        # Main stylesheet
     ├── js/
     │   └── main.js          # JavaScript
-    └── img/                 # 이미지 (추가 필요)
+    └── img/                 # Images (needs to be added)
 ```
 
-## 주요 기능
+## Main Features
 
-### 메인 페이지
-- Hero 섹션 - 메인 타이틀과 CTA 버튼
-- 코인 목록 - 지원하는 암호화폐 표시
-- 서비스 작동 방식 - 사용 방법 안내
-- 장점 섹션 - 서비스의 이점
-- 비즈니스 섹션 - 적용 가능한 비즈니스 유형
-- 도구 섹션 - 제공하는 기능
-- FAQ - 자주 묻는 질문 (아코디언)
-- 연락처 양식
+### Main Page
+- Hero Section - Main title and CTA buttons
+- Coins List - Displays supported cryptocurrencies
+- How Service Works - Usage guide
+- Advantages Section - Service benefits
+- Business Section - Applicable business types
+- Tools Section - Features provided
+- FAQ - Frequently asked questions (accordion)
+- Contact Form
 
-### 서브 페이지
-- **Cards** - 암호화폐 카드 서비스 소개
-- **Contacts** - 연락처 정보 및 문의 양식
-- **Blog** - 블로그 게시글 목록
+### Sub Pages
+- **Cards** - Cryptocurrency card service introduction
+- **Contacts** - Contact information and inquiry form
+- **Blog** - Blog post list
 
-## 기술 스택
+## Tech Stack
 
 - **Backend**: PHP
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **디자인**: 반응형 웹 디자인
+- **Design**: Responsive Web Design
 
-## 설치 방법
+## Installation
 
-1. 웹 서버 (Apache/Nginx)와 PHP 7.4+ 설치
-2. 프로젝트를 웹 루트 디렉토리에 복사
-3. 웹 브라우저로 접속
+1. Install web server (Apache/Nginx) and PHP 7.4+
+2. Copy project to web root directory
+3. Access via web browser
 
-## 사용 기술
+## Technologies Used
 
-- **CSS Grid & Flexbox**: 레이아웃 구성
-- **반응형 디자인**: 모바일, 태블릿, 데스크톱 지원
-- **PHP Include**: 컴포넌트 재사용
-- **JavaScript**: FAQ 아코디언, 스무스 스크롤
+- **CSS Grid & Flexbox**: Layout composition
+- **Responsive Design**: Mobile, tablet, desktop support
+- **PHP Include**: Component reuse
+- **JavaScript**: FAQ accordion, smooth scroll
 
-## 커스터마이징
+## Customization
 
-### 색상 변경
-`assets/css/style.css` 파일에서 다음 색상 값을 수정하세요:
+### Change Colors
+Modify the following color values in `assets/css/style.css`:
 - Primary Color: `#6366f1`
 - Secondary Color: `#8b5cf6`
 - Text Color: `#333`
 - Background: `#fff`
 
-### 콘텐츠 수정
-각 페이지의 PHP 파일에서 직접 텍스트를 수정할 수 있습니다.
+### Edit Content
+You can directly modify text in each page's PHP file.
 
-## 라이선스
+## License
 
 MIT License
 
-## 작성자
+## Author
 
 Claude Code
