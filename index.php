@@ -38,6 +38,7 @@ include 'includes/header.php';
                     ['name' => 'Litecoin', 'code' => 'LTC', 'price' => '$93.70', 'icon' => 'ltc'],
                     ['name' => 'Ethereum', 'code' => 'ETH', 'price' => '$3,060.60', 'icon' => 'eth'],
                     ['name' => 'USD Coin', 'code' => 'USDC', 'price' => '$0.99', 'icon' => 'usdc'],
+                    ['name' => 'Tron', 'code' => 'TRX', 'price' => '$0.25', 'icon' => 'trx'],
                     ['name' => 'Dash', 'code' => 'DASH', 'price' => '$81.67', 'icon' => 'dash'],
                 ];
 

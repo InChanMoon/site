@@ -11,6 +11,25 @@ if (file_exists($transactionsFile)) {
     $transactions = json_decode($jsonData, true);
 }
 
+// Function to auto-generate next transaction ID
+function generateNextId($transactions) {
+    if (empty($transactions)) {
+        return 'TRX001';
+    }
+
+    $maxNum = 0;
+    foreach ($transactions as $tx) {
+        if (preg_match('/TRX(\d+)/', $tx['id'], $matches)) {
+            $num = (int)$matches[1];
+            if ($num > $maxNum) {
+                $maxNum = $num;
+            }
+        }
+    }
+
+    return 'TRX' . str_pad($maxNum + 1, 3, '0', STR_PAD_LEFT);
+}
+
 // Handle form submissions
 $message = '';
 $messageType = '';
@@ -18,35 +37,48 @@ $messageType = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
-    if ($action === 'add' || $action === 'edit') {
+    if ($action === 'add') {
         $newTransaction = [
-            'id' => $_POST['id'],
+            'id' => generateNextId($transactions),
             'type' => $_POST['type'],
             'coin' => $_POST['coin'],
             'amount' => $_POST['amount'],
             'address' => $_POST['address'],
             'txid' => $_POST['txid'],
             'status' => $_POST['status'],
-            'timestamp' => $_POST['timestamp'],
+            'timestamp' => $_POST['timestamp'] ?: date('Y-m-d H:i:s'),
             'confirmations' => (int)$_POST['confirmations'],
             'fee' => $_POST['fee'],
             'network' => $_POST['network']
         ];
 
-        if ($action === 'add') {
-            $transactions[] = $newTransaction;
-            $message = 'Transaction added successfully!';
-            $messageType = 'success';
-        } elseif ($action === 'edit') {
-            $index = array_search($_POST['original_id'], array_column($transactions, 'id'));
-            if ($index !== false) {
-                $transactions[$index] = $newTransaction;
-                $message = 'Transaction updated successfully!';
-                $messageType = 'success';
-            }
-        }
-
+        $transactions[] = $newTransaction;
         file_put_contents($transactionsFile, json_encode($transactions, JSON_PRETTY_PRINT));
+        $message = 'Transaction added successfully with ID: ' . $newTransaction['id'];
+        $messageType = 'success';
+    }
+
+    if ($action === 'edit') {
+        $index = array_search($_POST['id'], array_column($transactions, 'id'));
+        if ($index !== false) {
+            $transactions[$index] = [
+                'id' => $_POST['id'],
+                'type' => $_POST['type'],
+                'coin' => $_POST['coin'],
+                'amount' => $_POST['amount'],
+                'address' => $_POST['address'],
+                'txid' => $_POST['txid'],
+                'status' => $_POST['status'],
+                'timestamp' => $_POST['timestamp'],
+                'confirmations' => (int)$_POST['confirmations'],
+                'fee' => $_POST['fee'],
+                'network' => $_POST['network']
+            ];
+
+            file_put_contents($transactionsFile, json_encode($transactions, JSON_PRETTY_PRINT));
+            $message = 'Transaction updated successfully!';
+            $messageType = 'success';
+        }
     }
 
     if ($action === 'delete') {
@@ -56,16 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         file_put_contents($transactionsFile, json_encode($transactions, JSON_PRETTY_PRINT));
         $message = 'Transaction deleted successfully!';
         $messageType = 'success';
-    }
-}
-
-// Get transaction for editing
-$editTransaction = null;
-if (isset($_GET['edit'])) {
-    $editId = $_GET['edit'];
-    $index = array_search($editId, array_column($transactions, 'id'));
-    if ($index !== false) {
-        $editTransaction = $transactions[$index];
     }
 }
 ?>
@@ -78,64 +100,77 @@ if (isset($_GET['edit'])) {
 }
 
 .admin-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
-    padding: 40px 0;
-    margin-bottom: 40px;
+    background: #fff;
+    padding: 30px 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 30px;
 }
 
 .admin-header h1 {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 700;
+    color: #111827;
     margin-bottom: 8px;
 }
 
 .admin-header p {
+    color: #6b7280;
     font-size: 16px;
-    opacity: 0.9;
 }
 
-.admin-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 30px;
+.alert {
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    font-weight: 600;
 }
 
-.form-card {
+.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.add-form-card {
     background: #fff;
-    padding: 30px;
+    padding: 24px;
     border-radius: 12px;
+    margin-bottom: 24px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    height: fit-content;
-    position: sticky;
-    top: 20px;
 }
 
-.form-title {
-    font-size: 20px;
+.add-form-title {
+    font-size: 18px;
     font-weight: 700;
     color: #111827;
-    margin-bottom: 24px;
-}
-
-.form-group {
     margin-bottom: 20px;
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
 .form-label {
-    display: block;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: #374151;
-    margin-bottom: 8px;
 }
 
 .form-input,
 .form-select {
-    width: 100%;
-    padding: 10px 12px;
+    padding: 8px 10px;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 14px;
     font-family: inherit;
 }
@@ -144,18 +179,10 @@ if (isset($_GET['edit'])) {
 .form-select:focus {
     outline: none;
     border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
-
-.btn-submit {
-    width: 100%;
-    padding: 12px 24px;
+.btn-add {
+    padding: 10px 24px;
     background: #6366f1;
     color: #fff;
     border: none;
@@ -166,81 +193,120 @@ if (isset($_GET['edit'])) {
     transition: background 0.3s;
 }
 
-.btn-submit:hover {
+.btn-add:hover {
     background: #4f46e5;
 }
 
-.btn-cancel {
-    width: 100%;
-    padding: 12px 24px;
-    background: #f3f4f6;
-    color: #374151;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 12px;
-    text-decoration: none;
-    display: block;
-    text-align: center;
-}
-
-.btn-cancel:hover {
-    background: #e5e7eb;
-}
-
-.transactions-list {
+.transactions-table-container {
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.list-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.list-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #111827;
+.transactions-table thead {
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
 }
 
-.transaction-item {
-    padding: 20px 24px;
+.transactions-table th {
+    padding: 16px 12px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.transactions-table td {
+    padding: 12px;
     border-bottom: 1px solid #f3f4f6;
-    transition: background 0.3s;
+    font-size: 14px;
 }
 
-.transaction-item:hover {
+.transactions-table tbody tr:hover {
     background: #f9fafb;
 }
 
-.transaction-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
+.transactions-table tbody tr.editing {
+    background: #eff6ff;
 }
 
-.transaction-id {
-    font-size: 16px;
-    font-weight: 700;
-    color: #111827;
-}
-
-.transaction-actions {
+.coin-cell {
     display: flex;
+    align-items: center;
     gap: 8px;
 }
 
+.coin-icon-small {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.tx-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.tx-status.completed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.tx-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.tx-status.processing {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.tx-status.failed {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.tx-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tx-type.deposit {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.tx-type.withdrawal {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 6px;
+}
+
 .btn-edit,
-.btn-delete {
+.btn-delete,
+.btn-save,
+.btn-cancel-edit {
     padding: 6px 12px;
     border: none;
     border-radius: 6px;
@@ -268,50 +334,59 @@ if (isset($_GET['edit'])) {
     background: #fecaca;
 }
 
-.transaction-details {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+.btn-save {
+    background: #6366f1;
+    color: #fff;
+}
+
+.btn-save:hover {
+    background: #4f46e5;
+}
+
+.btn-cancel-edit {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-cancel-edit:hover {
+    background: #e5e7eb;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid #6366f1;
+    border-radius: 4px;
     font-size: 13px;
 }
 
-.detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+.edit-select {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid #6366f1;
+    border-radius: 4px;
+    font-size: 13px;
 }
 
-.detail-label {
-    color: #6b7280;
+.monospace {
+    font-family: monospace;
     font-size: 12px;
+    color: #6b7280;
 }
 
-.detail-value {
-    color: #111827;
-    font-weight: 600;
+@media (max-width: 1200px) {
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-.alert {
-    padding: 16px 20px;
-    border-radius: 8px;
-    margin-bottom: 24px;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.alert-success {
-    background: #d1fae5;
-    color: #065f46;
-    border: 1px solid #10b981;
-}
-
-@media (max-width: 1024px) {
-    .admin-grid {
+@media (max-width: 768px) {
+    .form-grid {
         grid-template-columns: 1fr;
     }
 
-    .form-card {
-        position: static;
+    .transactions-table {
+        font-size: 12px;
     }
 }
 </style>
@@ -331,173 +406,244 @@ if (isset($_GET['edit'])) {
             </div>
         <?php endif; ?>
 
-        <div class="admin-grid">
-            <!-- Form Section -->
-            <div class="form-card">
-                <h2 class="form-title"><?php echo $editTransaction ? 'Edit Transaction' : 'Add New Transaction'; ?></h2>
-                <form method="POST" action="">
-                    <input type="hidden" name="action" value="<?php echo $editTransaction ? 'edit' : 'add'; ?>">
-                    <?php if ($editTransaction): ?>
-                        <input type="hidden" name="original_id" value="<?php echo htmlspecialchars($editTransaction['id']); ?>">
-                    <?php endif; ?>
+        <!-- Add New Transaction Form -->
+        <div class="add-form-card">
+            <h2 class="add-form-title">Add New Transaction</h2>
+            <form method="POST" action="">
+                <input type="hidden" name="action" value="add">
 
+                <div class="form-grid">
                     <div class="form-group">
-                        <label class="form-label">Transaction ID *</label>
-                        <input type="text" name="id" class="form-input"
-                               value="<?php echo $editTransaction ? htmlspecialchars($editTransaction['id']) : ''; ?>"
-                               placeholder="e.g., TRX011" required>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Type *</label>
-                            <select name="type" class="form-select" required>
-                                <option value="deposit" <?php echo ($editTransaction && $editTransaction['type'] === 'deposit') ? 'selected' : ''; ?>>Deposit</option>
-                                <option value="withdrawal" <?php echo ($editTransaction && $editTransaction['type'] === 'withdrawal') ? 'selected' : ''; ?>>Withdrawal</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Coin *</label>
-                            <select name="coin" class="form-select" required>
-                                <option value="BTC" <?php echo ($editTransaction && $editTransaction['coin'] === 'BTC') ? 'selected' : ''; ?>>BTC</option>
-                                <option value="ETH" <?php echo ($editTransaction && $editTransaction['coin'] === 'ETH') ? 'selected' : ''; ?>>ETH</option>
-                                <option value="USDT" <?php echo ($editTransaction && $editTransaction['coin'] === 'USDT') ? 'selected' : ''; ?>>USDT</option>
-                                <option value="USDC" <?php echo ($editTransaction && $editTransaction['coin'] === 'USDC') ? 'selected' : ''; ?>>USDC</option>
-                                <option value="LTC" <?php echo ($editTransaction && $editTransaction['coin'] === 'LTC') ? 'selected' : ''; ?>>LTC</option>
-                                <option value="XMR" <?php echo ($editTransaction && $editTransaction['coin'] === 'XMR') ? 'selected' : ''; ?>>XMR</option>
-                                <option value="DASH" <?php echo ($editTransaction && $editTransaction['coin'] === 'DASH') ? 'selected' : ''; ?>>DASH</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Amount *</label>
-                            <input type="text" name="amount" class="form-input"
-                                   value="<?php echo $editTransaction ? htmlspecialchars($editTransaction['amount']) : ''; ?>"
-                                   placeholder="e.g., 0.0523" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Fee *</label>
-                            <input type="text" name="fee" class="form-input"
-                                   value="<?php echo $editTransaction ? htmlspecialchars($editTransaction['fee']) : ''; ?>"
-                                   placeholder="e.g., 0.00001" required>
-                        </div>
+                        <label class="form-label">Type *</label>
+                        <select name="type" class="form-select" required>
+                            <option value="deposit">Deposit</option>
+                            <option value="withdrawal">Withdrawal</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Address *</label>
-                        <input type="text" name="address" class="form-input"
-                               value="<?php echo $editTransaction ? htmlspecialchars($editTransaction['address']) : ''; ?>"
-                               placeholder="Wallet address" required>
+                        <label class="form-label">Coin *</label>
+                        <select name="coin" class="form-select" required>
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                            <option value="USDT">USDT</option>
+                            <option value="USDC">USDC</option>
+                            <option value="LTC">LTC</option>
+                            <option value="XMR">XMR</option>
+                            <option value="DASH">DASH</option>
+                            <option value="TRX">TRX</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Transaction ID (Hash) *</label>
-                        <input type="text" name="txid" class="form-input"
-                               value="<?php echo $editTransaction ? htmlspecialchars($editTransaction['txid']) : ''; ?>"
-                               placeholder="Transaction hash" required>
+                        <label class="form-label">Amount *</label>
+                        <input type="text" name="amount" class="form-input" placeholder="e.g., 0.0523" required>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Status *</label>
-                            <select name="status" class="form-select" required>
-                                <option value="completed" <?php echo ($editTransaction && $editTransaction['status'] === 'completed') ? 'selected' : ''; ?>>Completed</option>
-                                <option value="pending" <?php echo ($editTransaction && $editTransaction['status'] === 'pending') ? 'selected' : ''; ?>>Pending</option>
-                                <option value="processing" <?php echo ($editTransaction && $editTransaction['status'] === 'processing') ? 'selected' : ''; ?>>Processing</option>
-                                <option value="failed" <?php echo ($editTransaction && $editTransaction['status'] === 'failed') ? 'selected' : ''; ?>>Failed</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Confirmations *</label>
-                            <input type="number" name="confirmations" class="form-input"
-                                   value="<?php echo $editTransaction ? htmlspecialchars($editTransaction['confirmations']) : '0'; ?>"
-                                   min="0" required>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Fee *</label>
+                        <input type="text" name="fee" class="form-input" placeholder="e.g., 0.00001" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Network *</label>
-                        <input type="text" name="network" class="form-input"
-                               value="<?php echo $editTransaction ? htmlspecialchars($editTransaction['network']) : ''; ?>"
-                               placeholder="e.g., Bitcoin, Ethereum, TRC-20" required>
+                        <input type="text" name="network" class="form-input" placeholder="e.g., Bitcoin, ERC-20" required>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Timestamp *</label>
-                        <input type="text" name="timestamp" class="form-input"
-                               value="<?php echo $editTransaction ? htmlspecialchars($editTransaction['timestamp']) : date('Y-m-d H:i:s'); ?>"
-                               placeholder="YYYY-MM-DD HH:MM:SS" required>
+                        <label class="form-label">Status *</label>
+                        <select name="status" class="form-select" required>
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                            <option value="failed">Failed</option>
+                        </select>
                     </div>
 
-                    <button type="submit" class="btn-submit">
-                        <?php echo $editTransaction ? 'Update Transaction' : 'Add Transaction'; ?>
-                    </button>
+                    <div class="form-group">
+                        <label class="form-label">Confirmations *</label>
+                        <input type="number" name="confirmations" class="form-input" value="0" min="0" required>
+                    </div>
 
-                    <?php if ($editTransaction): ?>
-                        <a href="admin.php" class="btn-cancel">Cancel Edit</a>
-                    <?php endif; ?>
-                </form>
-            </div>
-
-            <!-- Transactions List -->
-            <div class="transactions-list">
-                <div class="list-header">
-                    <h3 class="list-title">All Transactions (<?php echo count($transactions); ?>)</h3>
+                    <div class="form-group">
+                        <label class="form-label">Timestamp</label>
+                        <input type="text" name="timestamp" class="form-input" value="<?php echo date('Y-m-d H:i:s'); ?>" placeholder="YYYY-MM-DD HH:MM:SS">
+                    </div>
                 </div>
 
-                <?php if (empty($transactions)): ?>
-                    <div style="padding: 40px 24px; text-align: center; color: #6b7280;">
-                        <p>No transactions yet. Add your first transaction above.</p>
+                <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="form-group">
+                        <label class="form-label">Wallet Address *</label>
+                        <input type="text" name="address" class="form-input" placeholder="Full wallet address" required>
                     </div>
-                <?php else: ?>
-                    <?php foreach ($transactions as $tx): ?>
-                        <div class="transaction-item">
-                            <div class="transaction-header">
-                                <div>
-                                    <div class="transaction-id"><?php echo htmlspecialchars($tx['id']); ?></div>
-                                    <span style="font-size: 12px; color: #6b7280; text-transform: uppercase; font-weight: 600;">
-                                        <?php echo htmlspecialchars($tx['type']); ?>
-                                    </span>
-                                </div>
-                                <div class="transaction-actions">
-                                    <a href="?edit=<?php echo urlencode($tx['id']); ?>" class="btn-edit">Edit</a>
-                                    <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this transaction?');">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="id" value="<?php echo htmlspecialchars($tx['id']); ?>">
-                                        <button type="submit" class="btn-delete">Delete</button>
-                                    </form>
-                                </div>
-                            </div>
 
-                            <div class="transaction-details">
-                                <div class="detail-item">
-                                    <span class="detail-label">Coin</span>
-                                    <span class="detail-value"><?php echo $tx['coin']; ?> (<?php echo $tx['network']; ?>)</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Amount</span>
-                                    <span class="detail-value"><?php echo $tx['amount']; ?></span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Status</span>
-                                    <span class="detail-value" style="text-transform: capitalize;"><?php echo $tx['status']; ?> (<?php echo $tx['confirmations']; ?> conf.)</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Timestamp</span>
-                                    <span class="detail-value"><?php echo $tx['timestamp']; ?></span>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
+                    <div class="form-group">
+                        <label class="form-label">Transaction Hash (TXID) *</label>
+                        <input type="text" name="txid" class="form-input" placeholder="Blockchain transaction hash" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-add">Add Transaction (ID will be auto-generated)</button>
+            </form>
+        </div>
+
+        <!-- Transactions Table -->
+        <div class="transactions-table-container">
+            <table class="transactions-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Coin</th>
+                        <th>Amount</th>
+                        <th>Network</th>
+                        <th>Address</th>
+                        <th>TXID</th>
+                        <th>Status</th>
+                        <th>Confirmations</th>
+                        <th>Fee</th>
+                        <th>Timestamp</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($transactions)): ?>
+                        <tr>
+                            <td colspan="12" style="text-align: center; padding: 40px; color: #6b7280;">
+                                No transactions yet. Add your first transaction above.
+                            </td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($transactions as $tx): ?>
+                            <tr id="row-<?php echo htmlspecialchars($tx['id']); ?>">
+                                <td><strong><?php echo htmlspecialchars($tx['id']); ?></strong></td>
+                                <td>
+                                    <span class="tx-type <?php echo $tx['type']; ?>">
+                                        <?php echo $tx['type'] === 'deposit' ? '↓' : '↑'; ?>
+                                        <?php echo ucfirst($tx['type']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="coin-cell">
+                                        <img src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/<?php echo strtolower($tx['coin']); ?>.png"
+                                             alt="<?php echo $tx['coin']; ?>"
+                                             class="coin-icon-small">
+                                        <strong><?php echo $tx['coin']; ?></strong>
+                                    </div>
+                                </td>
+                                <td><strong><?php echo htmlspecialchars($tx['amount']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($tx['network']); ?></td>
+                                <td><span class="monospace" title="<?php echo htmlspecialchars($tx['address']); ?>"><?php echo substr(htmlspecialchars($tx['address']), 0, 20) . '...'; ?></span></td>
+                                <td><span class="monospace" title="<?php echo htmlspecialchars($tx['txid']); ?>"><?php echo substr(htmlspecialchars($tx['txid']), 0, 16) . '...'; ?></span></td>
+                                <td><span class="tx-status <?php echo $tx['status']; ?>"><?php echo ucfirst($tx['status']); ?></span></td>
+                                <td><?php echo $tx['confirmations']; ?></td>
+                                <td><?php echo htmlspecialchars($tx['fee']); ?></td>
+                                <td style="white-space: nowrap;"><?php echo htmlspecialchars($tx['timestamp']); ?></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-edit" onclick="editRow('<?php echo htmlspecialchars($tx['id']); ?>')">Edit</button>
+                                        <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this transaction?');">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($tx['id']); ?>">
+                                            <button type="submit" class="btn-delete">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Hidden edit row -->
+                            <tr id="edit-<?php echo htmlspecialchars($tx['id']); ?>" style="display: none;" class="editing">
+                                <td><strong><?php echo htmlspecialchars($tx['id']); ?></strong></td>
+                                <td>
+                                    <select class="edit-select" id="type-<?php echo htmlspecialchars($tx['id']); ?>">
+                                        <option value="deposit" <?php echo $tx['type'] === 'deposit' ? 'selected' : ''; ?>>Deposit</option>
+                                        <option value="withdrawal" <?php echo $tx['type'] === 'withdrawal' ? 'selected' : ''; ?>>Withdrawal</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="edit-select" id="coin-<?php echo htmlspecialchars($tx['id']); ?>">
+                                        <option value="BTC" <?php echo $tx['coin'] === 'BTC' ? 'selected' : ''; ?>>BTC</option>
+                                        <option value="ETH" <?php echo $tx['coin'] === 'ETH' ? 'selected' : ''; ?>>ETH</option>
+                                        <option value="USDT" <?php echo $tx['coin'] === 'USDT' ? 'selected' : ''; ?>>USDT</option>
+                                        <option value="USDC" <?php echo $tx['coin'] === 'USDC' ? 'selected' : ''; ?>>USDC</option>
+                                        <option value="LTC" <?php echo $tx['coin'] === 'LTC' ? 'selected' : ''; ?>>LTC</option>
+                                        <option value="XMR" <?php echo $tx['coin'] === 'XMR' ? 'selected' : ''; ?>>XMR</option>
+                                        <option value="DASH" <?php echo $tx['coin'] === 'DASH' ? 'selected' : ''; ?>>DASH</option>
+                                        <option value="TRX" <?php echo $tx['coin'] === 'TRX' ? 'selected' : ''; ?>>TRX</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="edit-input" id="amount-<?php echo htmlspecialchars($tx['id']); ?>" value="<?php echo htmlspecialchars($tx['amount']); ?>"></td>
+                                <td><input type="text" class="edit-input" id="network-<?php echo htmlspecialchars($tx['id']); ?>" value="<?php echo htmlspecialchars($tx['network']); ?>"></td>
+                                <td><input type="text" class="edit-input" id="address-<?php echo htmlspecialchars($tx['id']); ?>" value="<?php echo htmlspecialchars($tx['address']); ?>"></td>
+                                <td><input type="text" class="edit-input" id="txid-<?php echo htmlspecialchars($tx['id']); ?>" value="<?php echo htmlspecialchars($tx['txid']); ?>"></td>
+                                <td>
+                                    <select class="edit-select" id="status-<?php echo htmlspecialchars($tx['id']); ?>">
+                                        <option value="completed" <?php echo $tx['status'] === 'completed' ? 'selected' : ''; ?>>Completed</option>
+                                        <option value="pending" <?php echo $tx['status'] === 'pending' ? 'selected' : ''; ?>>Pending</option>
+                                        <option value="processing" <?php echo $tx['status'] === 'processing' ? 'selected' : ''; ?>>Processing</option>
+                                        <option value="failed" <?php echo $tx['status'] === 'failed' ? 'selected' : ''; ?>>Failed</option>
+                                    </select>
+                                </td>
+                                <td><input type="number" class="edit-input" id="confirmations-<?php echo htmlspecialchars($tx['id']); ?>" value="<?php echo $tx['confirmations']; ?>" min="0"></td>
+                                <td><input type="text" class="edit-input" id="fee-<?php echo htmlspecialchars($tx['id']); ?>" value="<?php echo htmlspecialchars($tx['fee']); ?>"></td>
+                                <td><input type="text" class="edit-input" id="timestamp-<?php echo htmlspecialchars($tx['id']); ?>" value="<?php echo htmlspecialchars($tx['timestamp']); ?>"></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-save" onclick="saveRow('<?php echo htmlspecialchars($tx['id']); ?>')">Save</button>
+                                        <button class="btn-cancel-edit" onclick="cancelEdit('<?php echo htmlspecialchars($tx['id']); ?>')">Cancel</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </main>
+
+<script>
+function editRow(id) {
+    document.getElementById('row-' + id).style.display = 'none';
+    document.getElementById('edit-' + id).style.display = 'table-row';
+}
+
+function cancelEdit(id) {
+    document.getElementById('row-' + id).style.display = 'table-row';
+    document.getElementById('edit-' + id).style.display = 'none';
+}
+
+function saveRow(id) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '';
+
+    const fields = {
+        action: 'edit',
+        id: id,
+        type: document.getElementById('type-' + id).value,
+        coin: document.getElementById('coin-' + id).value,
+        amount: document.getElementById('amount-' + id).value,
+        network: document.getElementById('network-' + id).value,
+        address: document.getElementById('address-' + id).value,
+        txid: document.getElementById('txid-' + id).value,
+        status: document.getElementById('status-' + id).value,
+        confirmations: document.getElementById('confirmations-' + id).value,
+        fee: document.getElementById('fee-' + id).value,
+        timestamp: document.getElementById('timestamp-' + id).value
+    };
+
+    for (const [key, value] of Object.entries(fields)) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
 
 <?php include '../includes/footer.php'; ?>

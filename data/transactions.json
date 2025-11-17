@@ -128,5 +128,31 @@
         "confirmations": 30,
         "fee": "1.00",
         "network": "ERC-20"
+    },
+    {
+        "id": "TRX011",
+        "type": "deposit",
+        "coin": "TRX",
+        "amount": "12500.00",
+        "address": "TYASr5UV6HEcXatwdFQfmLVUqQQQMUxHLS",
+        "txid": "4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d",
+        "status": "completed",
+        "timestamp": "2025-01-12 18:22:30",
+        "confirmations": 19,
+        "fee": "5.00",
+        "network": "Tron (TRC-20)"
+    },
+    {
+        "id": "TRX012",
+        "type": "withdrawal",
+        "coin": "TRX",
+        "amount": "8000.00",
+        "address": "TJDENsfBJs4RFETt1X1W8wMDc8M5XnJhCe",
+        "txid": "2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b",
+        "status": "pending",
+        "timestamp": "2025-01-12 11:45:18",
+        "confirmations": 3,
+        "fee": "3.00",
+        "network": "Tron (TRC-20)"
     }
 ]
